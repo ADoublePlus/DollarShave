@@ -12,7 +12,16 @@ public class GameManager : MonoBehaviour
 
    public int bearsShaven;
 
-    public Text scoreText;
+    public Text loseText;
+    public Text winText;
+
+    float timer = 10f;
+
+    public AudioSource audit;
+
+    
+
+    // public Text scoreText;
 
 
     enum BeardTypes
@@ -35,11 +44,17 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Beard = GetComponent<GameObject>();
+        audit = GetComponent<AudioSource>();
 
         BeardDecision();
 
         bearsShaven = 0;
-        scoreText.text = "Score: " + bearsShaven.ToString();
+
+        this.audit.Play();
+        //scoreText.text = "Score: " + bearsShaven.ToString();
+
+        loseText.GetComponent<Text>().enabled = false;
+        winText.GetComponent<Text>().enabled = false;
     }
 
     // Update is called once per frame
@@ -61,6 +76,10 @@ public class GameManager : MonoBehaviour
                 }
             //}
         }
+
+        timer -= Time.deltaTime;
+
+        WinOrLose();
     }
 
     void BeardRequest()
@@ -197,7 +216,7 @@ public class GameManager : MonoBehaviour
 
     void WinOrLose()
     {
-        bool hasWon;
+        /*bool hasWon;
         bool hasLost;
 
         
@@ -206,6 +225,25 @@ public class GameManager : MonoBehaviour
             hasWon = true;
             Debug.Log("DABBBB THAT COOKIE");
         }
+        */
 
+        if (timer <= 0)
+        {
+            timer = Time.timeScale = 0;
+            this.audit.Stop();
+            loseText.GetComponent<Text>().enabled = true;
+            Debug.Log("YOU FOOKIN FAILED YOU ABSOLUTE NUMP");
+        }
+
+        if (timer > 0 && timer <= 10)
+        {
+            if (GameObject.FindGameObjectsWithTag("Beard").Length == 0)
+            {
+                Time.timeScale = 0;
+                this.audit.Stop();
+                winText.GetComponent<Text>().enabled = true;
+                Debug.Log("Jingle Jangle Splush");
+            }
+        }
     }
 }
